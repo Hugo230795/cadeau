@@ -3,114 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Une surprise magique</title>
+    <title>Une Surprise pour Toi</title>
     <style>
-    :root {
-        --gift-color: #ff4757;
-        --ribbon-color: #eccc68;
-    }
+        /* VARIABLES DE COULEURS */
+        :root {
+            --gift-color: #ff4757;
+            --ribbon-color: #eccc68;
+        }
 
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh; /* Utilisation de min-height pour mobile */
-        font-family: 'Segoe UI', sans-serif;
-        overflow: hidden;
-        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-        background-size: 400% 400%;
-        animation: aurora 15s ease infinite;
-    }
+        /* FOND ANIMÉ */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: aurora 15s ease infinite;
+        }
 
-    /* Conteneur principal flexible */
-    .container {
-        text-align: center;
-        z-index: 10;
-        width: 100%;
-        padding: 20px;
-        box-sizing: border-box;
-    }
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-    /* Cadeau Adaptatif */
-    .gift-container {
-        width: 160px; /* Taille de base un peu plus petite pour mobile */
-        height: 160px;
-        position: relative;
-        cursor: pointer;
-        margin: 0 auto;
-        filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2));
-    }
+        /* CONTENEUR DU CADEAU */
+        .container {
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+        }
 
-    /* Photo Surprise Adaptative */
-    .surprise-photo {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        width: 90vw; /* Prend 90% de la largeur de l'écran max */
-        max-width: 350px; /* Mais ne dépasse pas 350px sur ordinateur */
-        height: auto;
-        border-radius: 15px;
-        border: 8px solid white;
-        box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-        z-index: 1;
-        transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        opacity: 0;
-    }
-
-    /* Ajustements pour les écrans larges (Tablettes/PC) */
-    @media (min-width: 768px) {
         .gift-container {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
+            position: relative;
+            cursor: pointer;
+            margin: 0 auto;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
         }
+
+        /* CORPS DU CADEAU */
+        .gift-box {
+            width: 100%;
+            height: 100%;
+            background: var(--gift-color);
+            border-radius: 5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* COUVERCLE */
+        .gift-lid {
+            width: 110%;
+            height: 40px;
+            background: var(--gift-color);
+            position: absolute;
+            top: -20px;
+            left: -5%;
+            z-index: 3;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* RUBANS (La croix sur le cadeau) */
+        .gift-box::after, .gift-lid::after {
+            content: '';
+            position: absolute;
+            background: var(--ribbon-color);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 100%;
+        }
+        .gift-box::before {
+            content: '';
+            position: absolute;
+            background: var(--ribbon-color);
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 30px;
+        }
+
+        /* PHOTO SURPRISE (Cachée au début) */
         .surprise-photo {
-            max-width: 450px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90vw;
+            max-width: 320px;
+            border: 10px solid white;
+            border-radius: 10px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            z-index: 1;
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
         }
-    }
 
-    /* Boîte de message responsive */
-    #message-box {
-        margin-top: 30px;
-        padding: 15px;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        color: white;
-        display: none;
-        max-width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-    }
+        /* ÉTAT OUVERT */
+        .container.open .gift-lid { transform: translateY(-200px) rotate(-15deg); opacity: 0; }
+        .container.open .gift-box { opacity: 0; transform: scale(0.5); transition: 0.5s; }
+        .container.open .surprise-photo { transform: translate(-50%, -50%) scale(1); opacity: 1; z-index: 100; }
 
-    /* ... garder le reste des animations (aurora, shake, etc.) du code précédent ... */
-</style>
+        /* ANIMATION SECOUSSE */
+        .shake { animation: shake 0.3s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(8deg); }
+            75% { transform: rotate(-8deg); }
+        }
+
+        #counter { color: white; font-weight: bold; margin-top: 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+
+        /* MESSAGE FINAL */
+        #message-box {
+            display: none;
+            margin-top: 20px;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
 <body>
-
-    <div class="bokeh">
-        <div class="circle" style="width: 400px; height: 400px; background: #fff176; top: 10%; left: 10%;"></div>
-        <div class="circle" style="width: 300px; height: 300px; background: #f48fb1; bottom: 20%; right: 10%; animation-delay: -5s;"></div>
-        <div class="circle" style="width: 500px; height: 500px; background: #81d4fa; top: 50%; left: 40%; animation-delay: -10s;"></div>
-    </div>
 
     <div class="container" id="main-container">
         <div class="gift-container" id="gift" onclick="handleGiftClick()">
             <div class="gift-lid"></div>
             <div class="gift-box"></div>
-            <img src="./quelle-est-l-origine-du-doigt-d-honneur.jpg" alt="Surprise" class="surprise-photo">
+            <img src="./photo.jpeg" class="surprise-photo" id="photo">
         </div>
         
-        <p id="counter">Clique pour découvrir ta surprise !</p>
+        <p id="counter">Clique pour ouvrir ton cadeau ! 🎁</p>
     </div>
 
     <script>
         let clicks = 0;
-        const target = 6;
+        const target = 5; // Nombre de clics
         const gift = document.getElementById('gift');
         const container = document.getElementById('main-container');
+        const counterText = document.getElementById('counter');
 
         function handleGiftClick() {
             if (clicks < target) {
@@ -122,17 +168,17 @@
                 if (clicks === target) {
                     openGift();
                 } else {
-                    document.getElementById('counter').innerText = `Encore ${target - clicks} petits clics...`;
+                    counterText.innerText = `Encore ${target - clicks} clics...`;
                 }
             }
         }
 
         function openGift() {
             container.classList.add('open');
-            document.getElementById('counter').style.display = 'none';
+            counterText.style.display = 'none';
             setTimeout(() => {
                 document.getElementById('message-box').style.display = 'block';
-            }, 500);
+            }, 600);
         }
     </script>
 </body>
